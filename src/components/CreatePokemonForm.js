@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { getPokemonTypes } from '../store/pokemon';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { getPokemonTypes, addPokemon } from "../store/pokemon";
 
 const CreatePokemonForm = ({ hideForm }) => {
-  const pokeTypes = useSelector(state => state.pokemon.types);
+  const pokeTypes = useSelector((state) => state.pokemon.types);
   const dispatch = useDispatch();
   const history = useHistory();
   const [number, setNumber] = useState(1);
-  const [attack, setAttack] = useState('');
-  const [defense, setDefense] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [name, setName] = useState('');
+  const [attack, setAttack] = useState("");
+  const [defense, setDefense] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [name, setName] = useState("");
   const [type, setType] = useState(pokeTypes[0]);
-  const [move1, setMove1] = useState('');
-  const [move2, setMove2] = useState('');
+  const [move1, setMove1] = useState("");
+  const [move2, setMove2] = useState("");
 
   const updateNumber = (e) => setNumber(e.target.value);
   const updateAttack = (e) => setAttack(e.target.value);
@@ -38,19 +38,21 @@ const CreatePokemonForm = ({ hideForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const payload = {
-    //   number,
-    //   attack,
-    //   defense,
-    //   imageUrl,
-    //   name,
-    //   type,
-    //   move1,
-    //   move2,
-    //   moves: [move1, move2]
-    // };
+    const payload = {
+      number,
+      attack,
+      defense,
+      imageUrl,
+      name,
+      type,
+      move1,
+      move2,
+      moves: [move1, move2],
+    };
 
     let createdPokemon;
+    createdPokemon = await dispatch(addPokemon(payload));
+    console.log("CREATED POKEMON ", createdPokemon);
     if (createdPokemon) {
       history.push(`/pokemon/${createdPokemon.id}`);
       hideForm();
@@ -71,7 +73,8 @@ const CreatePokemonForm = ({ hideForm }) => {
           min="1"
           required
           value={number}
-          onChange={updateNumber} />
+          onChange={updateNumber}
+        />
         <input
           type="number"
           placeholder="Attack"
@@ -79,7 +82,8 @@ const CreatePokemonForm = ({ hideForm }) => {
           max="100"
           required
           value={attack}
-          onChange={updateAttack} />
+          onChange={updateAttack}
+        />
         <input
           type="number"
           placeholder="Defense"
@@ -87,34 +91,41 @@ const CreatePokemonForm = ({ hideForm }) => {
           max="100"
           required
           value={defense}
-          onChange={updateDefense} />
+          onChange={updateDefense}
+        />
         <input
           type="text"
           placeholder="Image URL"
           value={imageUrl}
-          onChange={updateImageUrl} />
+          onChange={updateImageUrl}
+        />
         <input
           type="text"
           placeholder="Name"
           value={name}
-          onChange={updateName} />
+          onChange={updateName}
+        />
         <input
           type="text"
           placeholder="Move 1"
           value={move1}
-          onChange={updateMove1} />
+          onChange={updateMove1}
+        />
         <input
           type="text"
           placeholder="Move 2"
           value={move2}
-          onChange={updateMove2} />
+          onChange={updateMove2}
+        />
         <select onChange={updateType} value={type}>
-          {pokeTypes.map(type =>
+          {pokeTypes.map((type) => (
             <option key={type}>{type}</option>
-          )}
+          ))}
         </select>
         <button type="submit">Create new Pokemon</button>
-        <button type="button" onClick={handleCancelClick}>Cancel</button>
+        <button type="button" onClick={handleCancelClick}>
+          Cancel
+        </button>
       </form>
     </section>
   );
